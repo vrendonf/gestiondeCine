@@ -8,70 +8,82 @@ use Illuminate\Http\Request;
 
 class SalesController extends Controller
 {
+ 
     public function index()
     {
-        $movies = Sale::all(); // Recupera todas las películas de la base de datos
-        return view('sales.index', compact('sales')); // Pasa las películas a la vista
+        $sales = Sale::all(); 
+        return view('sales.index', compact('sales')); 
     }
 
-    // Guardar una nueva película
+    public function create()
+    {
+       
+        return view('sales.create');
+    }
+
+
     public function store(Request $request)
     {
         // Validación de los datos
         $request->validate([
-            'title' => 'required|string|max:255',
-            'age_restriction' => 'required|integer|min:0',
-            'duration' => 'required|numeric|min:0',
-            'value' => 'required|numeric|min:0',
+            'price' => 'required|numeric|min:0',
+            'date' => 'required|date',
+            'movie' => 'required|string|max:255',
+            'room' => 'required|integer|min:0',
         ]);
 
-        // Crear una nueva película
-        Movie::create([
-            'title' => $request->input('title'),
-            'age_restriction' => $request->input('age_restriction'),
-            'duration' => $request->input('duration'),
-            'value' => $request->input('value'),
-        ]);
+        
+        $sale = new Sale();
+        $sale->price = $request->price;
+        $sale->date = $request->date;
+        $sale->movie = $request->movie;
+        $sale->room = $request->room;
+        $sale->save();
 
-        return redirect()->route('movies.index'); // Redirige a la lista de películas
+        return redirect()->route('sales.index')->with('success', 'Venta creada con éxito.');
     }
 
-    // Mostrar el formulario para editar una película
-    public function edit(Movie $movie)
+ 
+    public function show(Sale $sale)
     {
-        return view('movies.edit', compact('movie')); // Pasa la película a la vista
+        return view('sales.show', compact('sale')); // Pasa la venta a la vista
     }
 
-    // Actualizar los datos de una película existente
-    public function update(Request $request, Movie $movie)
+
+    public function edit($id)
     {
-        // Validación de los datos
+        $sale = Sale::findOrFail($id); 
+        return view('sales.edit', compact('sale')); 
+    }
+
+    public function update(Request $request, Sale $sale)
+    {
+  
         $request->validate([
-            'title' => 'required|string|max:255',
-            'age_restriction' => 'required|integer|min:0',
-            'duration' => 'required|numeric|min:0',
-            'value' => 'required|numeric|min:0',
+            'price' => 'required|numeric|min:0',
+            'date' => 'required|date',
+            'movie' => 'required|string|max:255',
+            'room' => 'required|integer|min:0',
         ]);
 
-        // Actualizar la película
-        $movie->update([
-            'title' => $request->input('title'),
-            'age_restriction' => $request->input('age_restriction'),
-            'duration' => $request->input('duration'),
-            'value' => $request->input('value'),
+        // Actualizar la venta
+        $sale->update([
+            'price' => $request->price,
+            'date' => $request->date,
+            'movie' => $request->movie,
+            'room' => $request->room,
         ]);
 
-        return redirect()->route('movies.index'); // Redirige a la lista de películas
+        return redirect()->route('sales.index')->with('success', 'Venta actualizada con éxito.');
     }
 
-    // Eliminar una película
-    public function destroy(Movie $movie)
+    // Eliminar una venta
+    public function destroy(Sale $sale)
     {
-        $movie->delete(); // Elimina la película
+        $sale->delete(); 
 
-        return redirect()->route('movies.index'); // Redirige a la lista de películas
+        return redirect()->route('sales.index')->with('success', 'Venta eliminada con éxito.');
     }
-
-
-
 }
+
+

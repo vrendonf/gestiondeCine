@@ -9,26 +9,24 @@ class RoomsController extends Controller
 {
     public function index()
     {
-        $rooms = Room::all(); // Recupera todas las salas de la base de datos
-        return view('rooms.index', compact('rooms')); // Pasa las salas a la vista
+        $rooms = Room::all(); 
+        return view('rooms.index', compact('rooms')); 
     }
 
-    // Mostrar el formulario para crear una nueva sala
+   
     public function create()
     {
-        return view('rooms.create'); // Muestra la vista de creación de salas
+        return view('rooms.create'); 
     }
 
-    // Guardar una nueva sala
     public function store(Request $request)
     {
-        // Validación de los datos
         $request->validate([
             'name' => 'required|string|max:255',
             'capacity' => 'required|integer|min:1',
         ]);
 
-        // Crear una nueva sala
+      
         $room = new Room();
         $room->name = $request->name;
         $room->capacity = $request->capacity;
@@ -43,23 +41,21 @@ class RoomsController extends Controller
         return view('rooms.show', compact('room')); // Pasa la sala a la vista
     }
 
-    // Mostrar el formulario para editar una sala existente
-    public function edit($id)
+        public function edit($id)
     {
-        $room = Room::findOrFail($id); // Encuentra la sala por su ID
-        return view('rooms.edit', compact('room')); // Pasa la sala a la vista de edición
-    }
+        $room = Room::findOrFail($id); 
+        return view('rooms.edit', compact('room')); 
 
-    // Actualizar los datos de una sala existente
-    public function update(Request $request, Room $room)
+    } 
+        public function update(Request $request, Room $room)
     {
-        // Validación de los datos
+        
         $request->validate([
             'name' => 'required|string|max:255',
             'capacity' => 'required|integer|min:1',
         ]);
 
-        // Actualizar la sala
+        
         $room->update([
             'name' => $request->name,
             'capacity' => $request->capacity,
