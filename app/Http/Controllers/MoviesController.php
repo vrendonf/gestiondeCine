@@ -9,69 +9,67 @@ class MoviesController extends Controller
 {
     public function index()
     {
-        $products = Movie::all(); 
-        return view('movies.index', compact('movies'));
+        $movies = Movie::all(); // Recupera todas las películas de la base de datos
+        return view('movies.index', compact('movies')); // Pasa las películas a la vista
     }
 
-    public function create()
-    {
-        return view('movies.create');
-    }
-
+    // Guardar una nueva película
     public function store(Request $request)
     {
-      
-           
-        $movie = new Movie();
-        $movie->title = $request->title;
-        $movie->restriction = $request->restriction;
-        $movie->duration = $request->duration;
-        $movie->price = $request->product_price;
-    
-        $movie->save();
-        return redirect()->route('movies.index')->with('success');
+        // Validación de los datos
+        $request->validate([
+            'title' => 'required|string|max:255',
+            'age_restriction' => 'required|integer|min:0',
+            'duration' => 'required|numeric|min:0',
+            'value' => 'required|numeric|min:0',
+        ]);
 
-    
+        // Crear una nueva película
+        Movie::create([
+            'title' => $request->input('title'),
+            'age_restriction' => $request->input('age_restriction'),
+            'duration' => $request->input('duration'),
+            'value' => $request->input('value'),
+        ]);
+
+        return redirect()->route('movies.index'); // Redirige a la lista de películas
     }
 
-    public function show(Movie $movie)
+    // Mostrar el formulario para editar una película
+    public function edit(Movie $movie)
     {
-        return view('movies.show', compact('movie'));
+        return view('movies.edit', compact('movie')); // Pasa la película a la vista
     }
 
-    public function edit($id)
-    {
-        $product = Movie::findOrFail($id);
-        return view('movies.edit', compact('movie'));
-    }
-
+    // Actualizar los datos de una película existente
     public function update(Request $request, Movie $movie)
-{
-    $request->validate([
-        'title' => 'required',
-        'restriction' => 'required',
-        'duration' => 'required',
-        'price' => 'required|integer',
-        
-    ]);
+    {
+        // Validación de los datos
+        $request->validate([
+            'title' => 'required|string|max:255',
+            'age_restriction' => 'required|integer|min:0',
+            'duration' => 'required|numeric|min:0',
+            'value' => 'required|numeric|min:0',
+        ]);
 
-    $movie->update([
-        'title' => $request->title,
-        'restriction' => $request->restriction,
-        'duration' => $request->duration,
-        'price' => $request->price,
-    ]);
+        // Actualizar la película
+        $movie->update([
+            'title' => $request->input('title'),
+            'age_restriction' => $request->input('age_restriction'),
+            'duration' => $request->input('duration'),
+            'value' => $request->input('value'),
+        ]);
 
-    return redirect()->route('movies.index')->with('success');
-}
-    
+        return redirect()->route('movies.index'); // Redirige a la lista de películas
+    }
 
+    // Eliminar una película
     public function destroy(Movie $movie)
     {
-        $movie->delete();
-        return redirect()->route('movies.index')->with('success');
-    }
+        $movie->delete(); // Elimina la película
 
+        return redirect()->route('movies.index'); // Redirige a la lista de películas
+    }
 
 }
 

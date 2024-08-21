@@ -9,62 +9,69 @@ class RoomsController extends Controller
 {
     public function index()
     {
-        $products = Room::all(); 
-        return view('rooms.index', compact('room'));
+        $rooms = Room::all(); // Recupera todas las salas de la base de datos
+        return view('rooms.index', compact('rooms')); // Pasa las salas a la vista
     }
 
+    // Mostrar el formulario para crear una nueva sala
     public function create()
     {
-        return view('rooms.create');
+        return view('rooms.create'); // Muestra la vista de creación de salas
     }
 
+    // Guardar una nueva sala
     public function store(Request $request)
     {
-      
-           
+        // Validación de los datos
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'capacity' => 'required|integer|min:1',
+        ]);
+
+        // Crear una nueva sala
         $room = new Room();
         $room->name = $request->name;
         $room->capacity = $request->capacity;
-       
-    
         $room->save();
-        return redirect()->route('rooms.index')->with('success');
 
-    
+        return redirect()->route('rooms.index')->with('success', 'Sala creada con éxito.');
     }
 
-    public function show(Room $movie)
+    // Mostrar una sala específica
+    public function show(Room $room)
     {
-        return view('rooms.show', compact('room'));
+        return view('rooms.show', compact('room')); // Pasa la sala a la vista
     }
 
+    // Mostrar el formulario para editar una sala existente
     public function edit($id)
     {
-        $product = Room::findOrFail($id);
-        return view('rooms.edit', compact('room'));
+        $room = Room::findOrFail($id); // Encuentra la sala por su ID
+        return view('rooms.edit', compact('room')); // Pasa la sala a la vista de edición
     }
 
-    public function update(Request $request, Room $movie)
-{
-    $request->validate([
-        'name' => 'required',
-        'capacity' => 'required',
-       
-    ]);
-
-    $movie->update([
-        'name' => $request->title,
-        'capacity' => $request->capacity,
-       
-    ]);
-
-    return redirect()->route('products.index')->with('success');
-}
-    
-
-    public function destroy(Room $movie)
+    // Actualizar los datos de una sala existente
+    public function update(Request $request, Room $room)
     {
-        $movie->delete();
-        return redirect()->route('rooms.index')->with('success');
+        // Validación de los datos
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'capacity' => 'required|integer|min:1',
+        ]);
+
+        // Actualizar la sala
+        $room->update([
+            'name' => $request->name,
+            'capacity' => $request->capacity,
+        ]);
+
+        return redirect()->route('rooms.index')->with('success', 'Sala actualizada con éxito.');
+    }
+
+    // Eliminar una sala
+    public function destroy(Room $room)
+    {
+        $room->delete(); // Elimina la sala
+        return redirect()->route('rooms.index')->with('success', 'Sala eliminada con éxito.');
     }
 }
