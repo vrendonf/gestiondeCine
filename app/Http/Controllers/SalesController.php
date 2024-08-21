@@ -3,63 +3,64 @@
 namespace App\Http\Controllers;
 
 use App\Models\Movie;
+use App\Models\Sale;
 use Illuminate\Http\Request;
 
 class SalesController extends Controller
 {
     public function index()
     {
-        $products = Movie::all(); 
-        return view('movie.index', compact('movie'));
+        $products = Sale::all(); 
+        return view('sales.index', compact('sale'));
     }
 
     public function create()
     {
-        return view('movie.create');
+        return view('sales.create');
     }
 
     public function store(Request $request)
     {
       
            
-        $movie = new Movie();
-        $movie->title = $request->title;
-        $movie->restriction = $request->restriction;
-        $movie->duration = $request->duration;
-        $movie->price = $request->product_price;
+        $sale = new Sale();
+        $sale->price = $request->price;
+        $sale->date = $request->date();
+        $sale->movie = $request->movie;
+        $sale->room = $request->room;
     
-        $movie->save();
-        return redirect()->route('movie.index')->with('success', 'Producto creado correctamente.');
+        $sale->save();
+        return redirect()->route('rooms.index')->with('success');
 
     
     }
 
-    public function show(Movie $movie)
+    public function show(Sale $sale)
     {
-        return view('movie.show', compact('movie'));
+        return view('rooms.show', compact('room'));
     }
 
     public function edit($id)
     {
         $product = Movie::findOrFail($id);
-        return view('movie.edit', compact('movie'));
+        return view('sales.edit', compact('sale'));
     }
 
-    public function update(Request $request, Movie $movie)
+    public function update(Request $request, Sale $sale)
 {
     $request->validate([
-        'title' => 'required',
-        'restriction' => 'required',
-        'duration' => 'required',
-        'price' => 'required|integer',
+        'price' => 'required',
+        'date' => 'required',
+        'movie' => 'required',
+        'room' => 'required|integer',
         
     ]);
 
-    $movie->update([
-        'title' => $request->title,
-        'restriction' => $request->restriction,
-        'duration' => $request->duration,
+    $sale->update([
         'price' => $request->price,
+        'date' => $request->date,
+        'movie' => $request->movie,
+        'room' => $request->room,
     ]);
 
     return redirect()->route('products.index')->with('success', 'Producto actualizado correctamente.');
