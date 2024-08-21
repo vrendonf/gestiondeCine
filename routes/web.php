@@ -20,6 +20,8 @@ use App\Http\Controllers\RoomsController;
 // Ruta para registrar usuarios (store method)
 
 Route::post('/registro_peliculas', [MoviesController::class, 'store']);
+Route::post('/registro_salas', [RoomsController::class, 'store']);
+Route::post('/registro_store', [SalesController::class, 'store']);
 
 // Ruta para la página principal
 Route::get('/', function () {
